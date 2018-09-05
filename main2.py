@@ -1,65 +1,17 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-"""
-抽奖窗口界面
+# Form implementation generated from reading ui file 'main.ui'
+#
+# Created by: PyQt5 UI code generator 5.11.2
+#
+# WARNING! All changes made in this file will be lost!
 
-作者: Dengjm
-网站: https://github.com/duduwolf/lottery
-"""
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-import sys
-#from PyQt5.QtWidgets import QToolTip, QPushButton, QApplication, QDesktopWidget, QMainWindow
-#from PyQt5.QtGui import QIcon, QFont
-#from PyQt5.QtCore import QCoreApplication
-from PyQt5 import QtWidgets, QtGui, QtCore
-
-class Lottery_Windows(QtWidgets.QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-        #self.initUI()
-        self.initUI2(self)
-        self.show()
-
-    def initUI(self):
-        
-        #初始化窗口
-        self.resize(1024, 768)
-        self.__center()
-        self.setWindowTitle("^_^  看看谁是最幸运的人  ^_^")
-        self.setWindowIcon(QtGui.QIcon("icon.png"))
-        self.statusBar().showMessage("兰州市秦安路小学六年级三班")
-        QtWidgets.QToolTip.setFont(QtGui.QFont("微软雅黑;SansSerif", 12))
-
-        #初始化按钮
-        sbtn = QtWidgets.QPushButton("开始抽奖", self)
-        sbtn.setToolTip("点击按钮开始抽奖")
-        sbtn.resize(sbtn.sizeHint())
-        sbtn.move(50, 50)
-        sbtn.clicked.connect(self.start_lottery)
-        sbtn.resize(120, 60)
-        sbtn.setFont(QtGui.QFont("微软雅黑;SansSerif", 18))
-
-        qbtn = QtWidgets.QPushButton('退出', self)
-        qbtn.clicked.connect(QtCore.QCoreApplication.instance().quit)
-        qbtn.resize(qbtn.sizeHint())
-        qbtn.move(300, 50)
-        qbtn.resize(120, 60)
-        qbtn.setFont(QtGui.QFont("微软雅黑;SansSerif", 18))
-
-    def __center(self):
-        qr = self.frameGeometry()
-        cp = QtWidgets.QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-    def start_lottery(self):
-        print("点击开始按钮。。。")
-
-    def initUI2(self, MainWindow):
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        self.resize(748, 541)
+        MainWindow.resize(748, 541)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -120,9 +72,10 @@ class Lottery_Windows(QtWidgets.QMainWindow):
         self.gridLayout.addItem(spacerItem2, 3, 2, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
-        #self.retranslateUi(MainWindow)
+        self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "点击抽选"))
@@ -130,14 +83,3 @@ class Lottery_Windows(QtWidgets.QMainWindow):
         self.label.setText(_translate("MainWindow", "看看今天谁是最幸运的人"))
         self.label_2.setText(_translate("MainWindow", "被抽中的名单"))
 
-        self.pushButton_2.clicked.connect(QtCore.QCoreApplication.instance().quit)
-        self.pushButton.clicked.connect(self.start_lottery)
-
-
-
-if __name__ == '__main__':
-    
-    app = QtWidgets.QApplication(sys.argv)
-    lw = Lottery_Windows()
-    
-    sys.exit(app.exec_())
