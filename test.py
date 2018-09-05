@@ -11,11 +11,11 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("client")
         self.setWindowIcon(QIcon('icons/icon.png'))
-        self.resize(900, 600)
+        self.resize(900, 700)
         self.show()
 
         self.browser = QWebEngineView()
-        url = 'https://www.baidu.com'
+        url = 'file:///Users/denglq/develop/python/lottery/cloud3d.html'
         self.browser.load(QUrl(url))
         self.setCentralWidget(self.browser)
 
