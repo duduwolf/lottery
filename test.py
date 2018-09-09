@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.show()
 
         self.browser = QWebEngineView()
-        url = 'file:///Users/denglq/develop/python/lottery/cloud3d.html'
+        url = 'file:///Users/denglq/develop/python/lottery/index.html'
         self.browser.load(QUrl(url))
         self.setCentralWidget(self.browser)
 

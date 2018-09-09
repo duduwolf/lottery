@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>兰州市秦安路六年级三班</title>
+<style>
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: #000000;
+	margin: 0;
+	font-family: Helvetica, sans-serif;;
+	overflow: hidden;
+}
+
+a {
+	color: #ffffff;
+}
+
+#info {
+	position: absolute;
+	width: 100%;
+	color: #ffffff;
+	padding: 5px;
+	font-family: Monospace;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	z-index: 1;
+}
+
+#menu {
+	position: absolute;
+	bottom: 20px;
+	width: 100%;
+	text-align: center;
+	font-family: verdana,Tahoma,Arial,Hei,"Microsoft Yahei",SimHei;
+}
+
+.element {
+	width: 150px;
+	height: 150px;
+	box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+	border: 1px solid rgba(127,255,255,0.25);
+	text-align: center;
+	cursor: default;
+}
+
+.element:hover {
+	box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+	border: 1px solid rgba(127,255,255,0.75);
+}
+
+	.element .number {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		font-size: 18px;
+		color: rgba(127,255,255,0.75);
+		display: none;
+	}
+
+	.element .symbol {
+		position: absolute;
+		top: 50px;
+		left: 0px;
+		right: 0px;
+		font-size: 40px;
+		font-weight: bold;
+		font-family: verdana,Tahoma,Arial,Hei,"幼圆",SimHei;
+		color: rgba(255,255,255,0.75);
+		text-shadow: 0 0 10px rgba(0,255,255,0.95);
+	}
+
+	.element .details {
+		position: absolute;
+		bottom: 15px;
+		left: 0px;
+		right: 0px;
+		font-size: 12px;
+		color: rgba(127,255,255,0.75);
+		
+	}
+
+button {
+	color: rgba(127,255,255,0.75);
+	background: transparent;
+	outline: 1px solid rgba(127,255,255,0.75);
+	border: 0px;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+button:hover {
+	background-color: rgba(0,255,255,0.5);
+}
+button:active {
+	color: #000000;
+	background-color: rgba(0,255,255,0.75);
+}
+#start {
+	font-family: "微软雅黑";
+	font-size: 24px;
+}
+</style>
+</head>
+<body>
+<script src="js/three.min.js" ></script>
+<script src="js/tween.min.js" ></script>
+<script src="js/TrackballControls.js" ></script>
+<script src="js/CSS3DRenderer.js" ></script>
+
+<div id="container"></div>
+<div id="info">猜猜今天谁是最幸运的人</div>
+<div id="menu">
+<button id="table" style="display: none">表面</button>
+<button id="sphere" style="display: none">球体</button>
+<button id="helix" style="display: none">螺旋</button>
+<button id="grid" style="display: none">网格</button>
+<button id="start">开始转动</button>
+</div>
+
+<script>
+var table = [
+["杨明浩",	"", "431301", 1, 1],
+["丁璐",		"", "431302", 18, 1],
+["刘家好",	"", "431303", 1, 2],
+["张雯鑫", 	"", "431304", 2, 2],
+["何梓豪", 	"", "431305", 13, 2],
+["王锦琦", 	"", "431307", 14, 2],
+["张文慧", 	"", "431308", 15, 2],
+["李昌峻",	"", "431309", 16, 2],
+["高若菡", 	"", "431310", 17, 2],
+["郑珂玮", 	"", "431311", 18, 2],
+["宝文锦",	"", "431312", 1, 3],
+["孟玉",		"", "431313", 2, 3],
+["邓嘉铭", "", "431315", 13, 3],
+["鲁珊廷", "", "431316", 14, 3],
+["段昱铭", "", "431317", 15, 3],
+["翟义杰", "", "431318", 16, 3],
+["闻翌凯", "", "431319", 17, 3],
+["赵金花", "", "431320", 18, 3],
+["叶景润", "", "431321", 1, 4],
+["周子艺", "", "431322", 2, 4],
+["张智翔", "", "431323", 3, 4],
+["苏子佳", "", "431324", 4, 4],
+["刘宇轩", "", "431325", 5, 4],
+["李正涛", "", "431326", 6, 4],
+["彭正豪", "", "431327", 7, 4],
+["魏玉坤", "", "431329", 8, 4],
+["徐佳铭", "", "431330", 9, 4],
+["张子丁", "", "431331", 10, 4],
+["王润芝", "", "431332", 11, 4],
+["张秉科", "", "431333", 12, 4],
+["杨柳蕊", "", "431334", 13, 4],
+["郭逸轩", "", "431335", 14, 4],
+["黄琮祺", "", "431336", 15, 4],
+["张玉隆", "", "431337", 16, 4],
+["王奕乔", "", "431338", 17, 4],
+["马雨轩", "", "431339", 18, 4],
+["王若涵", "", "431340", 1, 5],
+["魏泽宇", "", "431341", 2, 5],
+["李佳",   "", "431342", 3, 5],
+["李程浩", "", "431343", 4, 5],
+["姜昊辰", "", "431344", 5, 5],
+["邓博源", "", "431345", 6, 5],
+["马羽瑄", "", "431346", 7, 5],
+["龙铨",   "", "431347", 8, 5],
+["汪艺佳", "", "431348", 9, 5],
+["孙绍雄", "", "431349", 10, 5],
+["庞雨欣", "", "431350", 11, 5],
+["鲜嘉兴", "", "431351", 12, 5],
+["马蓉",   "", "431352", 13, 5],
+["高延祺", "", "431353", 14, 5],
+["祁志远", "", "431354", 15, 5],
+["马锦驰", "", "431355", 16, 5],
+["王嘉哈锐", "", "431357", 17, 5],
+["步芮莹", "", "431358", 18, 5],
+["王涵",  "", "431359", 1, 6],
+["陈振国", "", "431360", 2, 6],
+["张振东", "", "431361", 4, 9],
+["王若喻", "", "431362", 5, 9],
+["赵蓉",  "", "431363", 6, 9],
+["高晨凯", "", "431364", 7, 9],
+["任婕", "", "431365", 8, 9],
+["续津铭", "", "431366", 9, 9],
+["张玉娇", "", "431367", 10, 9],
+["汪佩坤", "", "431368", 11, 9],
+["杨子仟仟", "", "431369", 12, 9],
+["钱程", "", "431370", 13, 9],
+["王雪戎", "", "431371", 14, 9],
+["赵家辉", "", "431372", 1, 1]
+];
+
+function randomsort() {
+    return Math.random()>.5 ? -1 : 1;
+}
+table.sort(randomsort);
+
+var camera, scene, renderer;
+var controls;
+
+var objects = [];
+var targets = { table: [], sphere: [], helix: [], grid: [] };
+
+init();
+animate();
+
+function init() {
+
+	camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 5000 );
+	camera.position.z = 3000;
+
+	scene = new THREE.Scene();
+
+	// table
+
+	for ( var i = 0; i < table.length; i ++ ) {
+
+		var element = document.createElement( 'div' );
+		element.className = 'element';
+		element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+		element.addEventListener("click", function(){
+			moveCamera(this);
+		});
+		element.customValue = table[i][0];
+
+		var number = document.createElement( 'div' );
+		number.className = 'number';
+		number.textContent = (i/5) + 1;
+		element.appendChild( number );
+
+		var symbol = document.createElement( 'div' );
+		symbol.className = 'symbol';
+		symbol.textContent = table[ i ][0];
+		element.appendChild( symbol );
+
+		var details = document.createElement( 'div' );
+		details.className = 'details';
+		details.innerHTML = table[ i ][1] + '<br>' + table[ i ][2];
+		element.appendChild( details );
+
+		var object = new THREE.CSS3DObject( element );
+		object.position.x = Math.random() * 4000 - 2000;
+		object.position.y = Math.random() * 4000 - 2000;
+		object.position.z = Math.random() * 4000 - 2000;
+		scene.add( object );
+
+		objects.push( object );
+
+		//
+
+		var object = new THREE.Object3D();
+		object.position.x = ( table[ i ][3] * 140 ) - 1330;
+		object.position.y = - ( table[ i ][4] * 180 ) + 990;
+
+		targets.table.push( object );
+
+	}
+
+	// sphere
+
+	var vector = new THREE.Vector3();
+
+	for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+		var phi = Math.acos( -1 + ( 2 * i ) / l );
+		var theta = Math.sqrt( l * Math.PI ) * phi;
+
+		var object = new THREE.Object3D();
+
+		object.position.x = 800 * Math.cos( theta ) * Math.sin( phi );
+		object.position.y = 800 * Math.sin( theta ) * Math.sin( phi );
+		object.position.z = 800 * Math.cos( phi );
+
+		vector.copy( object.position ).multiplyScalar( 2 );
+
+		object.lookAt( vector );
+
+		targets.sphere.push( object );
+
+	}
+
+	// helix
+
+	var vector = new THREE.Vector3();
+
+	for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+		var phi = i * 0.175 + Math.PI;
+
+		var object = new THREE.Object3D();
+
+		object.position.x = 900 * Math.sin( phi );
+		object.position.y = - ( i * 8 ) + 450;
+		object.position.z = 900 * Math.cos( phi );
+
+		vector.x = object.position.x * 2;
+		vector.y = object.position.y;
+		vector.z = object.position.z * 2;
+
+		object.lookAt( vector );
+
+		targets.helix.push( object );
+
+	}
+
+	// grid
+
+	for ( var i = 0; i < objects.length; i ++ ) {
+
+		var object = new THREE.Object3D();
+
+		object.position.x = ( ( i % 5 ) * 400 ) - 800;
+		object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+		object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+
+		targets.grid.push( object );
+
+	}
+
+	//
+
+	renderer = new THREE.CSS3DRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.domElement.style.position = 'absolute';
+	document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+	//
+
+	controls = new THREE.TrackballControls( camera, renderer.domElement );
+	// controls = new THREE.OrbitControls(camera, renderer.domElement);
+	controls.rotateSpeed = 0.5;//0.5
+	controls.zoomSpeed = 0.1;//1.0
+	controls.minDistance = 500;
+	controls.maxDistance = 3000;
+	controls.addEventListener( 'change', render );
+	controls.noPan = true;
+	//denglq
+	controls.dynamicDampingFactor = 0.03;
+
+
+	var button = document.getElementById( 'table' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.table, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'sphere' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.sphere, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'helix' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.helix, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'grid' );
+	button.addEventListener( 'click', function ( event ) {
+
+		transform( targets.grid, 2000 );
+
+	}, false );
+
+	var button = document.getElementById( 'start' );
+	button.addEventListener( 'click', function ( event ) {
+
+		startRotate();
+
+	}, false )
+
+	transform( targets.sphere, 1000 );
+
+	//
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+}
+
+function transform( targets, duration ) {
+
+	TWEEN.removeAll();
+
+	for ( var i = 0; i < objects.length; i ++ ) {
+
+		var object = objects[ i ];
+		var target = targets[ i ];
+
+		new TWEEN.Tween( object.position )
+			.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+			.easing( TWEEN.Easing.Exponential.InOut )
+			.start();
+
+		new TWEEN.Tween( object.rotation )
+			.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+			.easing( TWEEN.Easing.Exponential.InOut )
+			.start();
+
+	}
+
+	new TWEEN.Tween( this )
+		.to( {}, duration * 2 )
+		.onUpdate( render )
+		.start();
+
+}
+
+function onWindowResize() {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+	render();
+
+}
+
+function animate() {
+
+
+	requestAnimationFrame( animate );
+
+	TWEEN.update();
+
+	controls.update();
+
+}
+
+function render() {
+
+	renderer.render( scene, camera );
+
+}
+
+var startLottery = false;
+
+function startRotate() {
+	// moveCamera(objects[getRandomIntInclusive(0, objects.length - 1)].element);return;
+	if (!startLottery) {
+		myCameraTweenByAnyAxis(camera, 180, 5000, 5000);
+		startLottery = true;
+	} else {
+		moveCamera(objects[function(min,max){
+			//得到指定区间的随机整数
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}(0, objects.length - 1)].element);
+		startLottery = false;
+	}
+}
+
+function moveCamera(element) {
+
+	var position, rotation;
+    for (var i = 0; i < objects.length; i++) {
+
+        var object = objects[i];
+
+        if (object.element.customValue == element.customValue) {
+
+            position = object.position;
+            rotation = object.rotation;
+            found = true;
+            break;
+        }
+
+    }
+
+    if (found) {
+		found = false;
+		// var eye = new THREE.Vector3();
+		var opt = 1.3;
+		new TWEEN.Tween(camera.position).to({
+			x: position.x*opt,
+			y: position.y*opt,
+			z: position.z*opt
+		}, 3000).easing( TWEEN.Easing.Linear.None ).onComplete(function(){
+			camera.up.x = 0;
+			camera.up.y = 1;
+			camera.up.z = 0;
+			camera.updateProjectionMatrix();
+		}).start();
+    }
+
+}
+/*
+         *camera:相机
+         *angle：旋转角度
+         *segs:分段，即圆弧对应的路径分为几段
+         *during：动画执行的时间
+        */
+function myCameraTween(camera, angle, segs, during) {
+
+	var x = camera.position.x;
+	var y = camera.position.y;
+	var z = camera.position.z;
+
+
+	var endPosArray = new Array();
+
+	var perAngle = angle / segs;
+
+	for (var i = 1 ; i <= segs ; i++) {
+		var endPos = { "x": z * Math.sin(i * perAngle) + x * Math.cos(i * perAngle), 
+					"y": y , 
+					"z": z * Math.cos(i * perAngle) - x * Math.sin(i * perAngle) };
+		endPosArray.push(endPos);
+	}
+
+
+	var flag = 0;
+	var id = setInterval(function () {
+		if (flag == segs) {
+			clearInterval(id);
+		} else {
+			camera.position.x = endPosArray[flag].x;
+			camera.position.y = endPosArray[flag].y;
+			camera.position.z = endPosArray[flag].z;
+
+			flag++;
+		}
+
+	}, during / segs);
+}
+
+/*
+	*camera:相机
+	*angle：旋转角度
+	*segs:分段，即圆弧对应的路径分为几段
+	*during：动画执行的时间
+*/
+function myCameraTweenByAnyAxis(camera, angle, segs, during) {
+
+	var x = camera.position.x;
+	var y = camera.position.y;
+	var z = camera.position.z;
+
+	//相机向量（指向场景中心）
+	var v1 = new THREE.Vector3(x, y, z);
+
+	//求旋转轴，v1的垂直单位向量,令x=1,y=1,z=-(v1.x+v1.y)/v1.z
+	var n = (new THREE.Vector3(1, 0, -1.0 * v1.x / v1.z)).normalize();
+
+	var endPosArray = new Array();
+
+	var perAngle = angle / segs;
+
+	for (var i = 1 ; i <= segs ; i++) {
+		var sinDelta = Math.sin(THREE.Math.degToRad(i * perAngle));
+		var cosDelta = Math.cos(THREE.Math.degToRad(i * perAngle));
+
+		var tempX = x * (n.x * n.x * (1 - cosDelta) + cosDelta) + y * (n.x * n.y * (1 - cosDelta) - n.z * sinDelta) + z * (n.x * n.z * (1 - cosDelta) + n.y * sinDelta);
+		var tempY = x * (n.x * n.y * (1 - cosDelta) + n.z * sinDelta) + y * (n.y * n.y * (1 - cosDelta) + cosDelta) + z * (n.y * n.z * (1 - cosDelta) - n.x * sinDelta);
+		var tempZ = x * (n.x * n.z * (1 - cosDelta) - n.y * sinDelta) + y * (n.y * n.z * (1 - cosDelta) + n.x * sinDelta) + z * (n.z * n.z * (1 - cosDelta) + cosDelta);
+
+		var endPos = { "x": tempX, "y": tempY, "z": tempZ };
+
+		endPosArray.push(endPos);
+	}
+
+	var flag = 0;
+	var id = setInterval(function () {
+		if (flag == segs) {
+			clearInterval(id);
+		} else {
+			camera.position.x = endPosArray[flag].x;
+			camera.position.y = endPosArray[flag].y;
+			camera.position.z = endPosArray[flag].z;
+
+			camera.updateMatrix();
+
+			flag++;
+		}
+	}, during / segs);
+}
+
+function moveAndLookAt(camera, dstpos, dstlookat, options) {
+	options || (options = {duration: 300});
+
+	var origpos = new THREE.Vector3().copy(camera.position); // original position
+	var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
+
+	camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+	camera.lookAt(dstlookat);
+	var dstrot = new THREE.Euler().copy(camera.rotation)
+
+	// reset original position and rotation
+	camera.position.set(origpos.x, origpos.y, origpos.z);
+	camera.rotation.set(origrot.x, origrot.y, origrot.z);
+
+	//
+	// Tweening
+	//
+
+	// position
+	new TWEEN.Tween(camera.position).to({
+		x: dstpos.x,
+		y: dstpos.y,
+		z: dstpos.z
+	}, options.duration).start();;
+
+	// rotation (using slerp)
+	(function () {
+		var qa = camera.quaternion; // src quaternion
+		var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
+		var qm = new THREE.Quaternion();
+
+		var o = {t: 0};
+		new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+		THREE.Quaternion.slerp(qa, qb, qm, o.t);
+		camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
+		}).start();
+	}).call(this);
+}
+
+/*
+* r OC的距离
+* phi OC与世界坐标系y轴的夹角
+* theta OC在XOZ平面投影与Z轴的夹角
+*/
+function updateAngles(r, phi, theta) {
+	//var vec = new THREE.Vector3();
+	var x, y, z;
+	z = r * Math.sin(phi) * Math.cos(theta);
+	x = r * Math.sin(phi) * Math.sin(theta);
+	y = r * Math.cos(phi);
+
+	console.log("x " + x + " : " + y + " : " + z + " theta:" + theta + " phi:" + phi);
+	return { "x": x, "y": y, "z": z };
+}
+</script>
+</body>
+</html>
