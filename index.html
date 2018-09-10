@@ -82,7 +82,7 @@ a {
 		right: 0px;
 		font-size: 12px;
 		color: rgba(127,255,255,0.75);
-		
+
 	}
 
 button {
@@ -114,20 +114,19 @@ button:active {
 <script src="js/tween.min.js" ></script>
 <script src="js/TrackballControls.js" ></script>
 <script src="js/CSS3DRenderer.js" ></script>
-<div id = "full">
-<div id="container"></div>
-<div id="info">猜猜今天谁是最幸运的人</div>
+<div id="container"><div id="info">猜猜今天谁是最幸运的人</div></div>
 <div id="menu">
 <button id="table" style="display: none">表面</button>
 <button id="sphere" style="display: none">球体</button>
 <button id="helix" style="display: none">螺旋</button>
 <button id="grid" style="display: none">网格</button>
 <button id="start">开始转动</button>
-<input type="checkbox" id="rotateModel" /> <span style="color:#ffffff;font-size: 12px;">旋转时固定球体大小</span>
-</div>
+<input type="checkbox" id="rotateModel" />
+<label for="rotateModel" style="color:#ffffff;font-size: 12px;">旋转时固定球体大小</label>
 </div>
 
 <script>
+document.getElementById("start").focus();
 var table = [
 ["杨明浩",	"", "431301", 1, 1],
 ["丁璐",		"", "431302", 18, 1],
@@ -382,12 +381,17 @@ function init() {
 
 	}, false )
 
+    document.getElementById("rotateModel").addEventListener('mouseup', function(event) {
+        document.getElementById("start").focus();
+        event.preventDefault();
+		event.stopPropagation();
+    }, false);
+
 	transform( targets.sphere, 1000 );
 
 	//
 
 	window.addEventListener( 'resize', onWindowResize, false );
-
 }
 
 function transform( targets, duration ) {
@@ -544,19 +548,19 @@ function moveCamera(element) {
 function myCameraTween(camera, angle, segs, during) {
 
 	var isFix = document.getElementById("rotateModel").checked;
-	var opt = isFix ? 2.25 : 1;	//设定一个初始化的向量，经测定值为2.25
+	var opt = isFix ? 3 : 1;	//设定一个初始化的向量，经测定值为2.25
 	var x = camera.position.x*opt;
-	var y = camera.position.y*isFix ? 2.25 : 0;
+	var y = camera.position.y*isFix ? opt : 0;
 	var z = camera.position.z*opt;
-
+console.log(opt);
 	var endPosArray = new Array();
 
 	var perAngle = angle / segs;
 
 	for (var i = 1 ; i <= segs ; i++) {
-		
-		var endPos = { "x": z * Math.sin(i * perAngle) + x * Math.cos(i * perAngle), 
-					"y": y , 
+
+		var endPos = { "x": z * Math.sin(i * perAngle) + x * Math.cos(i * perAngle),
+					"y": y ,
 					"z": z * Math.cos(i * perAngle) - x * Math.sin(i * perAngle) };
 		endPosArray.push(endPos);
 	}
