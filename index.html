@@ -25,8 +25,8 @@ a {
 	width: 100%;
 	color: #ffffff;
 	padding: 5px;
-	font-family: Monospace;
-	font-size: 13px;
+	font-family: "幼圆";
+	font-size: 20px;
 	font-weight: bold;
 	text-align: center;
 	z-index: 1;
@@ -104,6 +104,9 @@ button:active {
 	font-family: "微软雅黑";
 	font-size: 24px;
 }
+#rotateModel {
+	margin-left: 20px;
+}
 </style>
 </head>
 <body>
@@ -120,6 +123,7 @@ button:active {
 <button id="helix" style="display: none">螺旋</button>
 <button id="grid" style="display: none">网格</button>
 <button id="start">开始转动</button>
+<input type="checkbox" id="rotateModel" /> <span style="color:#ffffff;font-size: 12px;">旋转时固定球体大小</span>
 </div>
 </div>
 
@@ -457,7 +461,7 @@ var id;	//id of setInterval
 function startRotate() {
 
 	if (!startLottery) {
-		controls.reset();
+		// controls.reset();
 		myCameraTween(camera, 20, 1000, 10000);
 		startLottery = true;
 		document.getElementById("start").innerText = "单击停止";
@@ -539,9 +543,10 @@ function moveCamera(element) {
 */
 function myCameraTween(camera, angle, segs, during) {
 
-	var opt = 1;	//设定一个初始化的向量，经测定值为2.25
+	var isFix = document.getElementById("rotateModel").checked;
+	var opt = isFix ? 2.25 : 1;	//设定一个初始化的向量，经测定值为2.25
 	var x = camera.position.x*opt;
-	var y = camera.position.y*opt;
+	var y = camera.position.y*isFix ? 2.25 : 0;
 	var z = camera.position.z*opt;
 
 	var endPosArray = new Array();
