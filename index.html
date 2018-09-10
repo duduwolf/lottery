@@ -111,7 +111,7 @@ button:active {
 <script src="js/tween.min.js" ></script>
 <script src="js/TrackballControls.js" ></script>
 <script src="js/CSS3DRenderer.js" ></script>
-
+<div id = "full">
 <div id="container"></div>
 <div id="info">猜猜今天谁是最幸运的人</div>
 <div id="menu">
@@ -120,6 +120,7 @@ button:active {
 <button id="helix" style="display: none">螺旋</button>
 <button id="grid" style="display: none">网格</button>
 <button id="start">开始转动</button>
+</div>
 </div>
 
 <script>
@@ -178,7 +179,7 @@ var table = [
 ["马锦驰", "", "431355", 16, 5],
 ["王嘉哈锐", "", "431357", 17, 5],
 ["步芮莹", "", "431358", 18, 5],
-["王涵",  "", "431359", 1, 6],
+// ["王涵",  "", "431359", 1, 6],
 ["陈振国", "", "431360", 2, 6],
 ["张振东", "", "431361", 4, 9],
 ["王若喻", "", "431362", 5, 9],
@@ -442,25 +443,49 @@ function render() {
 }
 
 var startLottery = false;
+var id;	//id of setInterval
 
 function startRotate() {
-	// moveCamera(objects[getRandomIntInclusive(0, objects.length - 1)].element);return;
+
 	if (!startLottery) {
-		myCameraTweenByAnyAxis(camera, 180, 5000, 5000);
+		controls.reset();
+		myCameraTween(camera, 20, 1000, 10000);
 		startLottery = true;
+		document.getElementById("start").innerText = "单击停止";
 	} else {
-		moveCamera(objects[function(min,max){
-			//得到指定区间的随机整数
+		clearInterval(id);
+		var ran = function(min,max){
 			min = Math.ceil(min);
 			max = Math.floor(max);
 			return Math.floor(Math.random() * (max - min + 1)) + min;
-		}(0, objects.length - 1)].element);
+		}(0, objects.length - 1);
+		moveCamera(objects[ran].element);
 		startLottery = false;
+		document.getElementById("start").innerText = "开始转动";
 	}
 }
 
-function moveCamera(element) {
+function requestFullscreen( elem ) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    }
+    else if (elem.webkitRequestFullScreen) {
+        // 对 Chrome 特殊处理，
+        // 参数 Element.ALLOW_KEYBOARD_INPUT 使全屏状态中可以键盘输入。
+        if ( window.navigator.userAgent.toUpperCase().indexOf( 'CHROME' ) >= 0 ) {
+            elem.webkitRequestFullScreen( Element.ALLOW_KEYBOARD_INPUT );
+        }
+        // Safari 浏览器中，如果方法内有参数，则 Fullscreen 功能不可用。
+        else {
+            elem.webkitRequestFullScreen();
+        }
+    }
+    else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+    }
+}
 
+function moveCamera(element) {
 	var position, rotation;
     for (var i = 0; i < objects.length; i++) {
 
@@ -477,58 +502,62 @@ function moveCamera(element) {
     }
 
     if (found) {
-		found = false;
-		// var eye = new THREE.Vector3();
-		var opt = 1.3;
-		new TWEEN.Tween(camera.position).to({
+		var opt = 1.35;
+		var tw = new TWEEN.Tween(camera.position).to({
 			x: position.x*opt,
 			y: position.y*opt,
 			z: position.z*opt
-		}, 3000).easing( TWEEN.Easing.Linear.None ).onComplete(function(){
+		// }, 3000).easing(TWEEN.Easing.Quadratic.Out).onComplete(function(){
+		// }, 3000).easing(TWEEN.Easing.Circular.Out).onComplete(function(){
+		}, 3000).easing(TWEEN.Easing.Back.Out).onComplete(function(){//回弹模式
+			// }, 3000).easing(TWEEN.Easing.Bounce.Out).onComplete(function(){//重力弹跳模式
+		// }, 3000).easing(TWEEN.Easing.Exponential.Out).onComplete(function(){
+		// }, 3000).easing(TWEEN.Easing.Linear.None).onComplete(function(){
 			camera.up.x = 0;
 			camera.up.y = 1;
 			camera.up.z = 0;
 			camera.updateProjectionMatrix();
-		}).start();
+		});
+		tw.start();
     }
 
 }
 /*
-         *camera:相机
-         *angle：旋转角度
-         *segs:分段，即圆弧对应的路径分为几段
-         *during：动画执行的时间
-        */
+	*camera:相机
+	*angle：旋转角度
+	*segs:分段，即圆弧对应的路径分为几段
+	*during：动画执行的时间
+*/
 function myCameraTween(camera, angle, segs, during) {
 
-	var x = camera.position.x;
-	var y = camera.position.y;
-	var z = camera.position.z;
-
+	var opt = 1;	//设定一个初始化的向量，经测定值为2.25
+	var x = camera.position.x*opt;
+	var y = camera.position.y*opt;
+	var z = camera.position.z*opt;
 
 	var endPosArray = new Array();
 
 	var perAngle = angle / segs;
 
 	for (var i = 1 ; i <= segs ; i++) {
+		
 		var endPos = { "x": z * Math.sin(i * perAngle) + x * Math.cos(i * perAngle), 
 					"y": y , 
 					"z": z * Math.cos(i * perAngle) - x * Math.sin(i * perAngle) };
 		endPosArray.push(endPos);
 	}
 
-
-	var flag = 0;
-	var id = setInterval(function () {
-		if (flag == segs) {
-			clearInterval(id);
+	var flag = 0, i = -1;
+	id = setInterval(function () {
+		if (flag == segs || flag == 0) {
+			// flag = 0;
+			i = -i;
 		} else {
 			camera.position.x = endPosArray[flag].x;
 			camera.position.y = endPosArray[flag].y;
 			camera.position.z = endPosArray[flag].z;
-
-			flag++;
 		}
+		flag = flag + i;
 
 	}, during / segs);
 }
